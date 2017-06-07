@@ -27,7 +27,7 @@ export interface LibraryContainerStates {
 }
 
 export class LibraryContainer extends React.Component<LibraryContainerProps, LibraryContainerStates> {
-    
+
     loadedTypesJson: any = null;
     layoutSpecsJson: any = null;
 

@@ -1,13 +1,15 @@
 import * as React from "react";
 import * as _ from "underscore";
-import { LibraryItem } from "./components/LibraryItem";
 import { SearchResultItem } from "./components/SearchResultItem";
-import { LibraryContainer } from "./components/LibraryContainer";
-import * as LibraryUtilities from "./LibraryUtilities";
 import { SearchBar } from "./components/SearchBar";
+import { LibraryItem } from "./components/LibraryItem";
+import { LibraryContainer } from "./components/LibraryContainer";
+import { LibraryController } from "./entry-point";
+import * as LibraryUtilities from "./LibraryUtilities";
 
 export class Searcher {
     libraryContainer: LibraryContainer = null;
+    libraryController: LibraryController = null;
     sections: LibraryUtilities.ItemData[] = [];
     searchInputField: HTMLInputElement = null;
     categories: string[] = [];
@@ -22,6 +24,7 @@ export class Searcher {
         sections: LibraryUtilities.ItemData[] = [],
         categories: string[] = []) {
         this.libraryContainer = libraryContainer;
+        this.libraryController = this.libraryContainer.props.libraryController;
         this.sections = sections;
         this.setSearchInputField = this.setSearchInputField.bind(this);
         this.initializeCategories(categories);
@@ -56,7 +59,7 @@ export class Searcher {
 
             structuredItems.push(<LibraryItem
                 key={index++}
-                libraryController={this.libraryContainer.props.libraryController}
+                libraryController={this.libraryController}
                 data={item} />
             );
         }
@@ -95,12 +98,12 @@ export class Searcher {
             if (item.childItems.length == 0) {
                 leafItems.push(<SearchResultItem
                     data={item}
-                    libraryController={this.libraryContainer.props.libraryController}
+                    libraryController={this.libraryController}
                     highlightedText={searchText}
                     pathToItem={pathToThisItem}
                     onParentTextClicked={this.directToLibrary.bind(this)}
                     detailed={detailed}
-                    />);
+                />);
             } else {
                 this.generateListItems(item.childItems, searchText, detailed, pathToThisItem, leafItems, false);
             }
