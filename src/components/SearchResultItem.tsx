@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { LibraryContainer } from "./LibraryContainer";
+import { LibraryController } from "../entry-point";
 import * as LibraryUtilities from "../LibraryUtilities";
 
 interface ParentTextClickedFunc {
@@ -9,7 +9,7 @@ interface ParentTextClickedFunc {
 
 interface SearchResultItemProps {
     data: LibraryUtilities.ItemData;
-    libraryContainer: LibraryContainer;
+    libraryController: LibraryController;
     highlightedText: string;
     pathToItem: LibraryUtilities.ItemData[];
     onParentTextClicked: ParentTextClickedFunc;
@@ -80,23 +80,21 @@ export class SearchResultItem extends React.Component<SearchResultItemProps, Sea
     }
 
     onItemClicked() {
-        this.props.libraryContainer.raiseEvent("itemClicked", this.props.data.contextData);
+        this.props.libraryController.raiseEvent("itemClicked", this.props.data.contextData);
     };
 
     onLibraryItemMouseLeave() {
-        let libraryContainer = this.props.libraryContainer;
+        let libraryController = this.props.libraryController;
         if (this.props.data.childItems.length == 0) {
-            let mouseLeaveEvent = libraryContainer.props.libraryController.ItemMouseLeaveEventName;
-            libraryContainer.raiseEvent(mouseLeaveEvent, { data: this.props.data.contextData });
+            libraryController.raiseEvent(libraryController.ItemMouseLeaveEventName, { data: this.props.data.contextData });
         }
     }
 
     onLibraryItemMouseEnter() {
-        let libraryContainer = this.props.libraryContainer;
+        let libraryController = this.props.libraryController;
         if (this.props.data.childItems.length == 0) {
             let rec = ReactDOM.findDOMNode(this).getBoundingClientRect();
-            let mouseEnterEvent = libraryContainer.props.libraryController.ItemMouseEnterEventName;
-            libraryContainer.raiseEvent(mouseEnterEvent, { data: this.props.data.contextData, rect: rec });
+            libraryController.raiseEvent(libraryController.ItemMouseEnterEventName, { data: this.props.data.contextData, rect: rec });
         }
     }
 }

@@ -27,7 +27,7 @@ export interface LibraryContainerStates {
 }
 
 export class LibraryContainer extends React.Component<LibraryContainerProps, LibraryContainerStates> {
-
+    
     loadedTypesJson: any = null;
     layoutSpecsJson: any = null;
 
@@ -135,10 +135,6 @@ export class LibraryContainer extends React.Component<LibraryContainerProps, Lib
         this.setState({ inSearchMode: this.state.inSearchMode });
     }
 
-    raiseEvent(name: string, params?: any | any[]) {
-        this.props.libraryController.raiseEvent(name, params);
-    }
-
     onSearchModeChanged(inSearchMode: boolean) {
         this.setState({ inSearchMode: inSearchMode });
     }
@@ -199,7 +195,7 @@ export class LibraryContainer extends React.Component<LibraryContainerProps, Lib
         }
 
         if (!this.state.structured) {
-            this.raiseEvent(this.props.libraryController.SearchTextUpdatedEventName, text);
+            this.props.libraryController.raiseEvent(this.props.libraryController.SearchTextUpdatedEventName, text);
         }
 
         this.onSearchModeChanged(true);
@@ -222,7 +218,7 @@ export class LibraryContainer extends React.Component<LibraryContainerProps, Lib
             if (!this.state.inSearchMode) {
                 let index = 0;
                 sections = this.generatedSections.map(data =>
-                    <LibraryItem key={index++} libraryContainer={this} data={data} />
+                    <LibraryItem key={index++} libraryController={this.props.libraryController} data={data} />
                 );
             }
             else {

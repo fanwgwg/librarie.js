@@ -56,7 +56,7 @@ export class Searcher {
 
             structuredItems.push(<LibraryItem
                 key={index++}
-                libraryContainer={this.libraryContainer}
+                libraryController={this.libraryContainer.props.libraryController}
                 data={item} />
             );
         }
@@ -95,7 +95,7 @@ export class Searcher {
             if (item.childItems.length == 0) {
                 leafItems.push(<SearchResultItem
                     data={item}
-                    libraryContainer={this.libraryContainer}
+                    libraryController={this.libraryContainer.props.libraryController}
                     highlightedText={searchText}
                     pathToItem={pathToThisItem}
                     onParentTextClicked={this.directToLibrary.bind(this)}
