@@ -28,14 +28,15 @@ describe("LibraryContainer UI", function () {
       data.appendChild(item);
     }
 
-    // create "libraryController" to pass as an argument for creation of "LibraryItem"
+    // create "libraryContainer" to pass as an argument for creation of "LibraryItem"
     let libraryController = LibraryEntryPoint.CreateLibraryController();
+    let libraryContainer = libraryController.createLibraryContainer();
 
     // Mount is "real" rendering that will actually render your component into a browser environment. 
     // If you are testing full React components, 
     // mount is used to do rendering  and test actions are simulated on mounted html
 
-    let libraryItem = mount(<LibraryItem libraryController={libraryController} data={data} />);
+    let libraryItem = mount(<LibraryItem libraryContainer={libraryContainer} data={data} />);
 
     expect(libraryItem).to.have.lengthOf(1);
     expect(libraryItem.props().data.childItems).to.have.lengthOf(2);

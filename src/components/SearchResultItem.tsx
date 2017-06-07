@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { LibraryController } from "../entry-point";
+import { LibraryContainer } from "./LibraryContainer";
 import * as LibraryUtilities from "../LibraryUtilities";
 
 interface ParentTextClickedFunc {
@@ -9,7 +9,7 @@ interface ParentTextClickedFunc {
 
 interface SearchResultItemProps {
     data: LibraryUtilities.ItemData;
-    libraryController: LibraryController;
+    libraryContainer: LibraryContainer;
     highlightedText: string;
     pathToItem: LibraryUtilities.ItemData[];
     onParentTextClicked: ParentTextClickedFunc;
@@ -80,18 +80,19 @@ export class SearchResultItem extends React.Component<SearchResultItemProps, Sea
     }
 
     onItemClicked() {
-        this.props.libraryController.raiseEvent("itemClicked", this.props.data.contextData);
+        let libraryController = this.props.libraryContainer.props.libraryController;
+        libraryController.raiseEvent(libraryController.ItemClickedEventName, this.props.data.contextData);
     };
 
     onLibraryItemMouseLeave() {
-        let libraryController = this.props.libraryController;
+        let libraryController = this.props.libraryContainer.props.libraryController;
         if (this.props.data.childItems.length == 0) {
             libraryController.raiseEvent(libraryController.ItemMouseLeaveEventName, { data: this.props.data.contextData });
         }
     }
 
     onLibraryItemMouseEnter() {
-        let libraryController = this.props.libraryController;
+        let libraryController = this.props.libraryContainer.props.libraryController;
         if (this.props.data.childItems.length == 0) {
             let rec = ReactDOM.findDOMNode(this).getBoundingClientRect();
             libraryController.raiseEvent(libraryController.ItemMouseEnterEventName, { data: this.props.data.contextData, rect: rec });

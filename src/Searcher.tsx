@@ -9,7 +9,6 @@ import * as LibraryUtilities from "./LibraryUtilities";
 
 export class Searcher {
     libraryContainer: LibraryContainer = null;
-    libraryController: LibraryController = null;
     sections: LibraryUtilities.ItemData[] = [];
     searchInputField: HTMLInputElement = null;
     categories: string[] = [];
@@ -24,7 +23,6 @@ export class Searcher {
         sections: LibraryUtilities.ItemData[] = [],
         categories: string[] = []) {
         this.libraryContainer = libraryContainer;
-        this.libraryController = this.libraryContainer.props.libraryController;
         this.sections = sections;
         this.setSearchInputField = this.setSearchInputField.bind(this);
         this.initializeCategories(categories);
@@ -59,7 +57,7 @@ export class Searcher {
 
             structuredItems.push(<LibraryItem
                 key={index++}
-                libraryController={this.libraryController}
+                libraryContainer={this.libraryContainer}
                 data={item} />
             );
         }
@@ -98,7 +96,7 @@ export class Searcher {
             if (item.childItems.length == 0) {
                 leafItems.push(<SearchResultItem
                     data={item}
-                    libraryController={this.libraryController}
+                    libraryContainer={this.libraryContainer}
                     highlightedText={searchText}
                     pathToItem={pathToThisItem}
                     onParentTextClicked={this.directToLibrary.bind(this)}

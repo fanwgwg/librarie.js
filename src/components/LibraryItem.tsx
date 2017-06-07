@@ -19,11 +19,11 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { ClusterView } from "./ClusterView";
-import { LibraryController } from "../entry-point";
+import { LibraryContainer } from "./LibraryContainer";
 import { ItemData, sortItemsByText } from "../LibraryUtilities";
 
 export interface LibraryItemProps {
-    libraryController: LibraryController,
+    libraryContainer: any,
     data: ItemData,
     onItemWillExpand?: Function
 }
@@ -227,7 +227,7 @@ export class LibraryItem extends React.Component<LibraryItemProps, LibraryItemSt
                     regularItems.map((item: ItemData) => {
                         return (<LibraryItem
                             key={index++}
-                            libraryController={this.props.libraryController}
+                            libraryContainer={this.props.libraryContainer}
                             data={item}
                             onItemWillExpand={this.onSingleChildItemWillExpand}
                         />);
@@ -246,7 +246,7 @@ export class LibraryItem extends React.Component<LibraryItemProps, LibraryItemSt
         let createCluster = null;
         if (createMethods.length > 0 && createMethods.some(item => item.visible)) {
             createCluster = (<ClusterView
-                libraryController={this.props.libraryController}
+                libraryContainer={this.props.libraryContainer}
                 icon={require("../resources/icons/library-create.svg")}
                 borderColor="#62895b" /* green */
                 childItems={createMethods} />);
@@ -255,7 +255,7 @@ export class LibraryItem extends React.Component<LibraryItemProps, LibraryItemSt
         let actionCluster = null;
         if (actionMethods.length > 0 && actionMethods.some(item => item.visible)) {
             actionCluster = (<ClusterView
-                libraryController={this.props.libraryController}
+                libraryContainer={this.props.libraryContainer}
                 icon={require("../resources/icons/library-action.svg")}
                 borderColor="#ad5446" /* red */
                 childItems={actionMethods} />);
@@ -264,7 +264,7 @@ export class LibraryItem extends React.Component<LibraryItemProps, LibraryItemSt
         let queryCluster = null;
         if (queryMethods.length > 0 && queryMethods.some(item => item.visible)) {
             queryCluster = (<ClusterView
-                libraryController={this.props.libraryController}
+                libraryContainer={this.props.libraryContainer}
                 icon={require("../resources/icons/library-query.svg")}
                 borderColor="#4b9dbf" /* blue */
                 childItems={queryMethods} />);
@@ -283,6 +283,14 @@ export class LibraryItem extends React.Component<LibraryItemProps, LibraryItemSt
         );
     }
 
+    // Collapse all child items when one of the child items is expanded
+    onSingleChildItemWillExpand() {
+        for (let item of this.props.data.childItems) {
+            item.expanded = false;
+        }
+        this.setState({ expanded: true }); // Make the current item (parent) expanded.
+    }
+
     onLibraryItemClicked() {
         // Toggle expansion state.
         let currentlyExpanded = this.state.expanded;
@@ -292,35 +300,27 @@ export class LibraryItem extends React.Component<LibraryItemProps, LibraryItemSt
 
         this.setState({ expanded: !currentlyExpanded });
 
-        let libraryController = this.props.libraryController;
+        let libraryController = this.props.libraryContainer.props.libraryController;
         if (this.props.data.childItems.length == 0) {
             libraryController.raiseEvent(libraryController.ItemClickedEventName, this.props.data.contextData);
         }
     }
 
     onSectionIconClicked(event: any) {
-        let libraryController = this.props.libraryController;
+        let libraryController = this.props.libraryContainer.props.libraryController;
         libraryController.raiseEvent(libraryController.SectionIconClickedEventName, this.props.data.text);
         event.stopPropagation(); // Prevent the onClick event of its parent item from being called.
     }
 
-    // Collapse all child items when one of the child items is expanded
-    onSingleChildItemWillExpand() {
-        for (let item of this.props.data.childItems) {
-            item.expanded = false;
-        }
-        this.setState({ expanded: true }); // Make the current item (parent) expanded.
-    }
-
     onLibraryItemMouseLeave() {
-        let libraryController = this.props.libraryController;
+        let libraryController = this.props.libraryContainer.props.libraryController;
         if (this.props.data.childItems.length == 0) {
             libraryController.raiseEvent(libraryController.ItemMouseLeaveEventName, { data: this.props.data.contextData });
         }
     }
 
     onLibraryItemMouseEnter() {
-        let libraryController = this.props.libraryController;
+        let libraryController = this.props.libraryContainer.props.libraryController;
         if (this.props.data.childItems.length == 0) {
             let rec = ReactDOM.findDOMNode(this).getBoundingClientRect();
             libraryController.raiseEvent(libraryController.ItemMouseEnterEventName, { data: this.props.data.contextData, rect: rec });
